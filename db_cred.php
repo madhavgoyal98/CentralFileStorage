@@ -1,0 +1,9 @@
+<?php
+
+    $host = "localhost";
+    $db_user = "root";
+    $db_pass = "";
+    $db_name = "file_storage";
+    $main_storage = getcwd()."\data\\";
+
+?>
