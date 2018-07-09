@@ -20,6 +20,7 @@
     
         require('db_cred.php');
     
+
         $connection = new MySQLi($host, $db_user, $db_pass, $db_name);
         $user = $_SESSION['username'];
         $used_storage = "";
