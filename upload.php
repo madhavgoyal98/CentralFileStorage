@@ -2,6 +2,13 @@
 
 <?php
     session_start();
+
+    unset($_SESSION['homeVisited']);
+
+    if(isset($_SESSION['dir_path_home']))
+    {
+        unset($_SESSION['dir_path_home']);
+    }
 ?>
 
 <html>
@@ -290,7 +297,7 @@
             &nbsp;
             <input type="submit" value="Change" name="changeSubmit">
             <br><br>
-            <input type="text" name="folder_name" placeholder="Folder name"> &nbsp;
+            <input type="text" name="folder_name" placeholder="Folder name" required> &nbsp;
             <input type="submit" value="Create Folder" name="createFolder">
         </form>
         <?php print_r($_SESSION['dir_path_create']); ?>
