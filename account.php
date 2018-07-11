@@ -4,6 +4,12 @@
     session_start();
     unset($_SESSION['createVisited']);
     unset($_SESSION['uploadVisited']);
+    unset($_SESSION['homeVisited']);
+
+    if(isset($_SESSION['dir_path_home']))
+    {
+        unset($_SESSION['dir_path_home']);
+    }
 
     if(isset($_SESSION['dir_path_create']))
     {
@@ -28,22 +34,22 @@
 </head>
 
 <body>
-   
+
    <?php
-    
-        require('db_cred.php');    
-    
+
+        require('db_cred.php');
+
         $connection = new MySQLi($host, $db_user, $db_pass, $db_name);
         $user = $_SESSION['username'];
         $msg1 = "";
         $msg2 = "";
-    
+
         if($connection->connect_error)
             die($connection->connect_error);
-    
+
         $query = "SELECT COUNT(*) FROM users WHERE username='$user';";
         $result = $connection->query($query);
-    
+
         if(!$result)
         {
             die($connection->connect_error);
@@ -52,7 +58,7 @@
         {
             $row = $result->fetch_array(MYSQLI_NUM);
             $result->close();
-            
+
             if($row[0] == 0)
             {
                 echo("<h3>Invalid Login</h3>");
@@ -72,10 +78,10 @@
                         $old_pass = sanitizeMySQL($connection, $_POST['old_password']);
                         $new_pass = sanitizeMySQL($connection, $_POST['new_password']);
                         $confirm_pass = sanitizeMySQL($connection, $_POST['re_password']);
-                        
+
                         $query = "SELECT * FROM users WHERE username='$user';";
                         $result = $connection->query($query);
-                        
+
                         if(!$result)
                         {
                             die($connection->connect_error);
@@ -84,16 +90,16 @@
                         {
                             $row = $result->fetch_array(MYSQLI_NUM);
                             $result->close();
-                            
+
                             if(password_verify($old_pass, $row[2]))
                             {
                                 if($new_pass == $confirm_pass)
                                 {
                                     $new_pass = password_hash($new_pass, PASSWORD_DEFAULT);
-                                    
+
                                     $query = "UPDATE users SET password='$new_pass' WHERE username='$user';";
                                     $result = $connection->query($query);
-                                    
+
                                     if(!$result)
                                     {
                                         die($connection->connect_error);
@@ -117,10 +123,10 @@
                     elseif(isset($_POST['delete_account']))
                     {
                         $dpass = sanitizeMySQL($connection, $_POST['password']);
-                        
+
                         $query = "SELECT * FROM users WHERE username='$user';";
                         $result = $connection->query($query);
-                        
+
                         if(!$result)
                         {
                             die($connection->connect_error);
@@ -129,12 +135,12 @@
                         {
                             $row = $result->fetch_array(MYSQLI_NUM);
                             $result->close();
-                            
+
                             if(password_verify($dpass, $row[2]))
                             {
                                 $query = "DELETE FROM users WHERE username='$user';";
                                 $result = $connection->query($query);
-                                
+
                                 if(!$result)
                                 {
                                     die($connection->connect_error);
@@ -142,7 +148,7 @@
                                 else
                                 {
                                     deleteAll($main_storage. $user);
-                                
+
                                     echo('<script type="text/javascript">window.open("login.php"); window.close(); </script>');
                                 }
                             }
@@ -154,10 +160,10 @@
                     }
                 }
             }
-            
+
             $connection->close();
         }
-    
+
         function sanitizeString($var)
         {
             $var = stripslashes($var);
@@ -174,7 +180,7 @@
 
             return $var;
         }
-    
+
         function deleteAll($str)
         {
             //It it's a file.
@@ -197,12 +203,12 @@
         }
 
     ?>
-    
+
     <div>
         <h2>
             Change Password
         </h2>
-        
+
         <form name="changePassword" action="account.php" method="post">
             Old Password &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input type="password" name="old_password" placeholder="Old Password" maxlength="20" onClick="document.getElementById('error1').innerHTML='';" required><br><br>
             New Password &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input type="password" name="new_password" placeholder="New Password" maxlength="20" required><br><br>
@@ -212,27 +218,27 @@
           <span id="error1">
                 <font style="color: #E70003; font-size: 0.9em;">
                     <?php
-                        echo($msg1);  
+                        echo($msg1);
                     ?>
                 </font>
           </span>
         </form>
-        
+
         <br>
-        
+
         <hr>
     </div>
-    
+
     <div>
         <font size="+2"><strong>Delete Account</strong></font> (All files will also be deleted) <br><br>
-        
+
         <form name="deleteAccount" action="account.php" method="post">
             Enter Password &nbsp; &nbsp; <input type="password" name="password" placeholder="Password" maxlength="20" onClick="document.getElementById('error2').innerHTML='';" required><br><br>
             &nbsp;<input type="submit" name="delete_account" value="Submit">&nbsp;
             <span id="error2">
                 <font style="color: #E70003; font-size: 0.9em;">
                     <?php
-                        echo($msg2);  
+                        echo($msg2);
                     ?>
                 </font>
             </span>
