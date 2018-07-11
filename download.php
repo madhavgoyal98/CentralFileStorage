@@ -30,7 +30,13 @@
 
         $filename = basename($_GET['file']);
         // Specify file path.
-        $path = $main_storage. $user. '\\'; // '/uplods/'
+        $path = ""; // '/uplods/'
+
+        foreach ($_SESSION['dir_path_home'] as $i)
+        {
+            $path = $path. $i. "\\";
+        }
+
         $download_file =  $path. $filename;
 
         if(!empty($filename))
