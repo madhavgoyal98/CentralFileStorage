@@ -102,13 +102,15 @@
             {
                 $dir = $dir. $i. "\\";
             }
-
-            $allFiles = scandir($dir);
-            $files = array_diff($allFiles, array('.', '..')); // To remove . and ..
-
-            foreach($files as $file)
+            
+            $dir_itr = new DirectoryIterator($dir);
+        
+            foreach($dir_itr as $file)
             {
-                echo("<a style='text-decoration: none;' href='download.php?file=". $file. "'>". $file. "</a><br><br>");
+                if(!$file->isDir())
+                {
+                    echo("<a style='text-decoration: none;' href='download.php?file=". $file->getFilename(). "'>". $file->getFilename(). "</a><br><br>");
+                }
             }
         }
 
